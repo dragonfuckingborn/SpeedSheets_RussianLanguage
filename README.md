@@ -19,6 +19,67 @@
 ## Благодарности
 Огромная благодарность автору оригинального проекта за создание такого полезного инструмента.
 
+
+---
+
+### Примеры песен (Practice Mode)
+
+Нажмите на любую из этих ссылок, чтобы мгновенно загрузить песню в режим практики!
+
+####Поп и рок
+
+**Seven Nation Army — The White Stripes** (со скачками октав)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=eegedcjbkeegecdcjba
+
+**Never Gonna Give You Up — Rick Astley** (припев)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=cdfddggfcdfdfefcdfdkcjbf
+
+**All Star — Smash Mouth** (припев, с диезами)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=gkdjbbaaggkcjbaaggg;f;fedde
+
+**Take On Me — A-ha** (припев, с диезами)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=;fga;fga;fedde;fga
+
+####Фильмы и игры
+
+**Star Wars (Main Theme) — John Williams** (со скачками октав)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=gggkcgfedkcjgfedkcjgfefd
+
+**Super Mario Bros. (Overworld Theme) — Koji Kondo**
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=keeecegjgkcjgeablbag
+
+**Tetris Theme (Korobeiniki)**
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=kejbkcdcgbaakcedcjbbkcdecjaa
+
+**Megalovania (Undertale) — Toby Fox** (с бемолями)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=ddkdjlagfdfgcckdjlagfdfg
+
+**Hedwig's Theme (Harry Potter) — John Williams** (с диезами)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=bkeg;febak;f
+
+**He's a Pirate (Pirates of the Caribbean)**
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=gkcccdeeeefgggagffeddc
+
+####Классика и народная музыка
+
+**Für Elise — Beethoven** (с диезами)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=ke;de;dejbkdcja
+
+**Ode to Joy — Beethoven**
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=eefggfedccdeeddeefggfedccdedcc
+
+**Happy Birthday** (Соль мажор — включает скачки октав и диезы! Обратите внимание: k — скачок вверх до высокой D, j — возврат вниз, ;f — игра F#.)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=ddedg;fddedagddkdjbg;fekccjbgag
+
+**Joy to the World** (Ре мажор — нисходящая гамма с диезами)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=kd;cjbbag;fed
+
+**Mary Had a Little Lamb** (Простая гамма до мажор)
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=edcdeeedddeggedcdeeeeddedc
+
+**Twinkle Twinkle Little Star**
+https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=ccggaagffeeddcggffeedggffeedccggaagffeeddc
+
 ---
 
 # SpeedSheets
