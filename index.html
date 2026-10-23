@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedSheets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Music&display=swap" rel="stylesheet">
+    <style>
+        .staff-line { stroke: #334155; stroke-width: 1.5; }
+        .note { fill: #1e293b; transition: fill 0.2s ease; }
+        .ledger-line { stroke: #1e293b; stroke-width: 2; }
+        .music-font { font-family: 'Noto Music', serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+<!-- Find me on github octocat in the corner  -->
+    <a href="https://github.com/bohemian-miser/SpeedSheets" class="github-corner" aria-label="Посмотреть исходный код на GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <!-- Top Bar -->
+    <div class="w-full max-w-6xl flex flex-wrap justify-between items-center mb-6 gap-4">
+        <h1 class="text-2xl font-black text-slate-800 tracking-tight">SpeedSheets</h1>
+        
+        <div class="flex flex-col gap-2 bg-white p-2 px-4 rounded-xl shadow-sm text-sm font-semibold text-slate-600 w-full">
+            <div class="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm">
+                    <input type="checkbox" id="overlayToggle" class="w-4 h-4 text-indigo-600" checked>
+                    Показывать ноту
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm">
+                    <input type="checkbox" id="alwaysShowToggle" class="w-4 h-4 text-indigo-600">
+                    Всегда показывать ноты
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm">
+                    <input type="checkbox" id="flashToggle" class="w-4 h-4 text-indigo-600" checked>
+                    Подсвечивать ошибку
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm" title="Воспроизводит сгенерированный звук">
+                    <input type="checkbox" id="soundToggle" class="w-4 h-4 text-indigo-600">
+                    🔊 Звук (S)
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <button id="btnToggleStats" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors uppercase bg-indigo-50 px-2 py-1 rounded">Статистика</button>
+            </div>
+            <div class="h-px w-full bg-slate-200"></div>
+            <div class="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm">
+                    <input type="checkbox" id="accidentalToggleCheck" class="w-4 h-4 text-indigo-600" checked>
+                    Диезы и бемоли
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm">
+                    <input type="checkbox" id="persistentAccidentalToggle" class="w-4 h-4 text-indigo-600">
+                    Сохранять режим диезов/бемолей (P)
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm" title="Нота должна совпадать с показанной октавой">
+                    <input type="checkbox" id="strictOctaveToggle" class="w-4 h-4 text-indigo-600">
+                    Строгая октава (O)
+                    <span class="text-[10px] text-slate-400 font-normal ml-1">(Точное совпадение октавы)</span>
+                </label>
+                <div class="w-px h-4 bg-slate-300"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm">
+                    Режим (M):
+                    <select id="modeSelect" class="bg-slate-50 border border-slate-200 rounded p-1 outline-none focus:border-indigo-500 font-bold">
+                        <option value="words">Слова</option>
+                        <option value="random">Случайно</option>
+                        <option value="scale">Гаммы</option>
+                        <option value="a-g">Прогон A-G</option>
+                        <option value="freeplay">Свободная игра</option>
+                        <option value="recording">Запись</option>
+                        <option value="practice" id="practiceOption" style="display:none;">Практика</option>
+                        <option value="training">Тренировка (SRS)</option>
+                    </select>
+                </label>
+                <div id="scaleOptionsContainer" class="hidden flex items-center gap-2">
+                    <div class="w-px h-4 bg-slate-300"></div>
+                    <select id="scaleRootSelect" class="bg-slate-50 border border-slate-200 rounded p-1 outline-none focus:border-indigo-500 font-bold text-xs">
+                        <option value="c">C</option>
+                        <option value="c#">C# / Db</option>
+                        <option value="d">D</option>
+                        <option value="d#">D# / Eb</option>
+                        <option value="e">E</option>
+                        <option value="f">F</option>
+                        <option value="f#">F# / Gb</option>
+                        <option value="g">G</option>
+                        <option value="g#">G# / Ab</option>
+                        <option value="a">A</option>
+                        <option value="a#">A# / Bb</option>
+                        <option value="b">B</option>
+                    </select>
+                    <select id="scaleTypeSelect" class="bg-slate-50 border border-slate-200 rounded p-1 outline-none focus:border-indigo-500 font-bold text-xs">
+                        <option value="major">Мажор</option>
+                        <option value="minor">Натуральный минор</option>
+                        <option value="harmonic">Гармонический минор</option>
+                        <option value="melodic">Мелодический минор</option>
+                    </select>
+                </div>
+                <div class="w-px h-4 bg-slate-300" id="wordLengthDivider"></div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs md:text-sm" id="wordLengthContainer">
+                    Мин. длина:
+                    <select id="wordLengthSelect" class="bg-slate-50 border border-slate-200 rounded p-1 outline-none focus:border-indigo-500 font-bold">
+                        <option value="all">Все</option>
+                    </select>
+                    <span id="wordCountLabel" class="text-xs text-slate-500 font-bold w-8 text-center text-indigo-600 bg-indigo-50 rounded px-1"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="flex gap-2 flex-wrap justify-end">
+            <button id="btnClearRecording" class="hidden bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2 px-4 rounded-xl shadow transition-colors">
+                Очистить
+            </button>
+            <button id="btnShareRecording" class="hidden bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-2 px-4 rounded-xl shadow transition-colors">
+                Поделиться записью
+            </button>
+            <button id="btnLoadedSong" class="hidden bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-xl shadow transition-colors">
+                Спидран (загруженная песня)
+            </button>
+            <button id="btnSpeedRun" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-xl shadow transition-colors">
+                Спидран (100)
+            </button>
+            <button id="btnTrial" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl shadow transition-colors">
+                Испытание на время (60 с)
+            </button>
+        </div>
+    </div>
+
+    <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl p-6 md:p-10 space-y-8 relative overflow-hidden">
+        
+        <div class="flex justify-between items-end">
+            <div class="flex gap-6">
+                <div>
+                    <p class="text-slate-500 text-sm font-bold uppercase tracking-widest">Счёт</p>
+                    <p id="scoreVal" class="text-3xl font-black text-indigo-600">0</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-bold uppercase tracking-widest">Ошибки</p>
+                    <p id="mistakeVal" class="text-3xl font-black text-red-500">0</p>
+                </div>
+                <div id="npmContainer" class="hidden flex gap-4 border-l border-slate-200 pl-4 ml-2">
+                    <div class="w-20">
+                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Время</p>
+                        <p id="randomStopwatchVal" class="text-2xl font-black font-mono tabular-nums text-slate-600 tracking-tighter">0.0 с</p>
+                    </div>
+                    <div class="w-16">
+                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Ноты/мин</p>
+                        <p id="npmVal" class="text-2xl font-black font-mono tabular-nums text-amber-500 tracking-tighter">0</p>
+                    </div>
+                    <div class="w-20">
+                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Сек/нота</p>
+                        <p id="spnVal" class="text-2xl font-black font-mono tabular-nums text-blue-500 tracking-tighter">0.00</p>
+                    </div>
+                </div>
+                <div id="wordsTimerContainer" class="hidden border-l border-slate-200 pl-4 ml-2">
+                    <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Последние попытки</p>
+                    <div id="wordsTimerList" class="flex flex-col gap-0.5 text-xs font-mono text-slate-600 h-[48px] overflow-y-hidden w-32 justify-end">
+                    </div>
+                </div>
+            </div>
+            <div id="timerDisplay" class="text-4xl font-black text-slate-300 hidden tracking-tighter">60 с</div>
+        </div>
+
+        <!-- Sheet Music Display -->
+        <div id="sheetMusicWrapper" class="bg-white border-2 border-slate-200 rounded-xl p-4 overflow-hidden relative">
+            <!-- Overlay for Countdown / Messages -->
+            <div id="overlay" class="absolute inset-0 bg-white/90 z-20 flex flex-col items-center justify-center hidden fade-in backdrop-blur-sm rounded-xl">
+                <h2 id="overlayText" class="text-6xl font-black text-indigo-600 tracking-tighter drop-shadow-sm">3</h2>
+            </div>
+            <svg id="sheetMusic" viewBox="0 -60 1100 300" class="w-full h-auto min-w-[900px]">
+                <defs>
+                    <clipPath id="notesClip">
+                        <rect x="90" y="-60" width="1110" height="300" />
+                    </clipPath>
+                </defs>
+                <g id="grandStaff">
+                    <!-- Violin Stats View -->
+                    <g id="statsViewLayer" class="hidden opacity-80 pointer-events-none"></g>
+
+                    <!-- Octave Highlight -->
+                    <rect id="octaveHighlight" x="20" y="63" width="1170" height="44" fill="rgba(99, 102, 241, 0.15)" rx="8" class="transition-all duration-300" pointer-events="none" />
+                    <text id="octaveLabel" x="600" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#6366f1" font-weight="bold">Октава: 0</text>
+
+                    <!-- Range Selector -->
+                    <g id="rangeSelectorGroup" class="hidden" style="touch-action: none;">
+                        <rect id="rangeBg" x="90" y="-30" width="1110" height="240" fill="rgba(200, 200, 200, 0.1)" pointer-events="none" />
+                        
+                        <!-- Left Vertical Bracket Line -->
+                        <line id="rangeVerticalLine" x1="80" y1="40" x2="80" y2="160" stroke="#f59e0b" stroke-width="4" pointer-events="none" />
+                        
+                        <g id="rangeTopGroup" class="cursor-ns-resize">
+                            <rect id="rangeTopHit" x="40" y="20" width="1160" height="40" fill="transparent" />
+                            <line id="rangeTopLine" x1="80" y1="40" x2="1200" y2="40" stroke="#f59e0b" stroke-width="3" stroke-dasharray="4 4" pointer-events="none" />
+                            <polygon id="rangeTopHandle" points="70,40 90,30 90,50" fill="#f59e0b" pointer-events="none" />
+                        </g>
+                        
+                        <g id="rangeBottomGroup" class="cursor-ns-resize">
+                            <rect id="rangeBottomHit" x="40" y="140" width="1160" height="40" fill="transparent" />
+                            <line id="rangeBottomLine" x1="80" y1="160" x2="1200" y2="160" stroke="#f59e0b" stroke-width="3" stroke-dasharray="4 4" pointer-events="none" />
+                            <polygon id="rangeBottomHandle" points="70,160 90,150 90,170" fill="#f59e0b" pointer-events="none" />
+                        </g>
+                    </g>
+                    
+                    <!-- Grand Staff Brace -->
+                    <path d="M 30 50 C 15 50 15 80 15 100 C 15 120 15 150 30 150 C 20 150 20 120 20 100 C 20 80 20 50 30 50" fill="#334155"/>
+                    <line x1="28" y1="50" x2="28" y2="150" stroke="#334155" stroke-width="2"/>
+                    <line x1="1180" y1="50" x2="1180" y2="150" stroke="#334155" stroke-width="2"/>
+                    
+                    <!-- Treble Clef -->
+                    <text x="35" y="96" class="music-font" font-size="58" fill="#1e293b">&#x1D11E;</text>
+                    <line x1="28" y1="50" x2="1180" y2="50" class="staff-line" />
+                    <line x1="28" y1="60" x2="1180" y2="60" class="staff-line" />
+                    <line x1="28" y1="70" x2="1180" y2="70" class="staff-line" />
+                    <line x1="28" y1="80" x2="1180" y2="80" class="staff-line" />
+                    <line x1="28" y1="90" x2="1180" y2="90" class="staff-line" />
+                    
+                    <!-- Bass Clef -->
+                    <text x="35" y="146" class="music-font" font-size="45" fill="#1e293b">&#x1D122;</text>
+                    <line x1="28" y1="110" x2="1180" y2="110" class="staff-line" />
+                    <line x1="28" y1="120" x2="1180" y2="120" class="staff-line" />
+                    <line x1="28" y1="130" x2="1180" y2="130" class="staff-line" />
+                    <line x1="28" y1="140" x2="1180" y2="140" class="staff-line" />
+                    <line x1="28" y1="150" x2="1180" y2="150" class="staff-line" />
+                    
+                    <g clip-path="url(#notesClip)">
+                        <g id="notesLayer" class="transition-transform duration-300"></g>
+                    </g>
+                </g>
+            </svg>
+        </div>
+
+        <div id="recordingDisplay" class="hidden w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-left font-mono text-sm text-slate-600 break-all max-h-32 overflow-y-auto"></div>
+
+        <!-- Interaction Area -->
+        <div class="flex flex-col items-center space-y-6 w-full relative">
+            <input type="text" id="hiddenMobileInput" class="opacity-0 absolute -z-10 pointer-events-none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <div class="flex gap-4">
+                <button id="btnToggleVirtualKeyboard" class="text-xs font-bold text-slate-400 uppercase hover:text-slate-600 transition-colors">Виртуальная клавиатура</button>
+                <button id="btnNativeKeyboard" class="text-xs font-bold text-indigo-400 uppercase hover:text-indigo-600 transition-colors md:hidden">Системная клавиатура</button>
+            </div>
+            <div class="flex flex-col gap-3 items-center w-full transition-all duration-300" id="virtualKeyboardContainer">
+                <div class="flex justify-center gap-1 md:gap-2 flex-wrap w-full" id="virtualKeyboardMain">
+                    <!-- A-G Buttons injected via JS -->
+                </div>
+                <div class="flex justify-center gap-1 md:gap-2 flex-wrap w-full" id="virtualKeyboardAcc">
+                    <!-- Accidental Buttons injected via JS -->
+                </div>
+            </div>
+            
+            <button id="skipBtn" class="text-xs font-bold text-slate-400 uppercase hover:text-slate-600 transition-colors">Пропустить слово / Обновить</button>
+            
+            <div class="flex flex-col items-center gap-2 mt-4 text-xs font-bold text-slate-400">
+                <div class="flex gap-4 flex-wrap justify-center">
+                    <button id="btnToggleRange" class="hover:text-indigo-600 transition-colors uppercase">Диапазон фокуса</button>
+                    <span>|</span>
+                    <button id="btnLJKKeys" class="hover:text-indigo-600 transition-colors uppercase">Сбросить клавиши (l;jk)</button>
+                    <span>|</span>
+                    <button id="btnResetKeys" class="hover:text-indigo-600 transition-colors uppercase">Клавиши j/k/spc/n</button>
+                    <span>|</span>
+                    <button id="btnClearStats" class="text-red-400 hover:text-red-600 transition-colors uppercase">Сбросить статистику</button>
+                </div>
+                <span class="italic text-slate-300 normal-case">(Правый клик по кнопке — назначить клавишу)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message -->
+    <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full font-bold shadow-2xl transition-all duration-300 transform translate-y-24 opacity-0 z-50 pointer-events-none">
+        Сообщение
+    </div>
+
+    <!-- Stats Modal (Shared or End of Trial) -->
+    <div id="statsModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden fade-in p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform scale-100 transition-all relative">
+            <div id="fakedStamp" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none hidden bg-white/60 backdrop-blur-[2px]">
+                <div class="text-7xl font-black text-red-600 transform -rotate-12 border-8 border-red-600 rounded-xl p-4 shadow-2xl bg-white/80">ПОДДЕЛКА</div>
+            </div>
+            <div class="bg-indigo-600 p-6 text-center relative flex flex-col items-center">
+                <h3 id="statsTitle" class="text-2xl font-black text-white">Время вышло!</h3>
+                <div id="verifiedBadge" class="mt-2 hidden bg-indigo-800 text-indigo-100 text-[10px] uppercase font-bold px-2 py-1 rounded-full tracking-wider flex items-center gap-1 shadow-inner">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Криптографически проверенный счёт
+                </div>
+            </div>
+            <div class="p-6 space-y-6 text-center">
+                <div class="flex justify-around">
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Счёт</p>
+                        <p id="modalScore" class="text-5xl font-black text-indigo-600">0</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Ошибки</p>
+                        <p id="modalMistakes" class="text-5xl font-black text-red-500">0</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Ноты/мин</p>
+                        <p id="modalNPM" class="text-5xl font-black text-amber-500">0</p>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-slate-100">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Режим</p>
+                    <p id="modalMode" class="text-sm font-bold text-slate-600">Слова</p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 hidden" id="modalRangeContainer">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Диапазон фокуса</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden p-2 flex justify-center">
+                        <svg viewBox="0 20 600 160" class="w-full h-24">
+                            <g transform="translate(10, 0)">
+                                <!-- Grand Staff Brace -->
+                                <path d="M 30 50 C 15 50 15 80 15 100 C 15 120 15 150 30 150 C 20 150 20 120 20 100 C 20 80 20 50 30 50" fill="#334155"/>
+                                <line x1="28" y1="50" x2="28" y2="150" stroke="#334155" stroke-width="2"/>
+                                <line x1="580" y1="50" x2="580" y2="150" stroke="#334155" stroke-width="2"/>
+                                
+                                <line x1="28" y1="50" x2="580" y2="50" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="60" x2="580" y2="60" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="70" x2="580" y2="70" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="80" x2="580" y2="80" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="90" x2="580" y2="90" stroke="#334155" stroke-width="1.5" />
+                                
+                                <line x1="28" y1="110" x2="580" y2="110" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="120" x2="580" y2="120" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="130" x2="580" y2="130" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="140" x2="580" y2="140" stroke="#334155" stroke-width="1.5" />
+                                <line x1="28" y1="150" x2="580" y2="150" stroke="#334155" stroke-width="1.5" />
+                                
+                                <rect id="modalRangeRect" x="30" y="40" width="550" height="120" fill="rgba(245, 158, 11, 0.25)" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 4" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3 pt-2">
+                    <button id="btnShare" class="w-full bg-indigo-50 border-2 border-indigo-100 hover:bg-indigo-100 text-indigo-700 font-bold py-3 rounded-xl transition-colors">
+                        Скопировать ссылку
+                    </button>
+                    <button id="btnCloseModal" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors">
+                        Закрыть и играть
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            "abed", "accede", "ace", "aced", "adage", "add", "added", "age", "aged",
+            "baa", "baba", "bad", "badge", "bag", "baggage", "bead", "bed", "bee", "beef", "beg",
+            "cab", "caba", "cad", "cade", "cadge", "cage", "cafe", "cede",
+            "dab", "dad", "dada", "daff", "dag", "deaf", "deb", "decade", "dee", "deed", "deface",
+            "ebb", "edge", "efface", "egg", "face", "facade", "fad", "fade", "fed", "fee", "feed",
+            "gab", "gad", "gaff", "gag", "gage"
+        ];
+
+        const SALT = "SPEEDSHEETS_V1";
+        const RANGE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        function encodeRange(top, bottom) {
+            if (!isRangeVisible) return "";
+            let iTop = Math.max(0, Math.min(61, Math.round((top + 50) / 5)));
+            let iBot = Math.max(0, Math.min(61, Math.round((bottom + 50) / 5)));
+            return RANGE_CHARS[iTop] + RANGE_CHARS[iBot];
+        }
+        function decodeRange(str) {
+            if (!str || str.length !== 2) return null;
+            let iTop = RANGE_CHARS.indexOf(str[0]);
+            let iBot = RANGE_CHARS.indexOf(str[1]);
+            if (iTop === -1 || iBot === -1) return null;
+            return { top: (iTop * 5) - 50, bottom: (iBot * 5) - 50 };
+        }
+
+        async function generateSig(scoreStr, wrongStr, modeStr, timeStr="", rangeStr="") {
+            const data = `${scoreStr}-${wrongStr}-${modeStr}-${timeStr}-${rangeStr}-${SALT}`;
+            const encoder = new TextEncoder();
+            const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 15);
+        }
+
+        let isTimeTrial = false;
+        let isSpeedRun = false;
+        let speedRunStartTime = 0;
+        let timeRemaining = 60;
+        let timerInterval = null;
+        let currentWordArr = [];
+        let recordedString = "";
+        let practiceArr = [];
+        let freePlayYs = [];
+        let pendingBaseNote = null;
+        let accidentalToggle = null;
+        let chordChars = new Set();
+        let chordTimeout = null;
+        let currentIndex = 0;
+        let currentOctave = 0;
+        let totalNotesPlayed = 0;
+
+        function updateScroll() {
+            const spacing = 45;
+            const startX = 120;
+            const mode = modeSelect.value;
+            const isFree = mode === 'freeplay' || mode === 'recording';
+            
+            let activeIndex = isFree ? (currentWordArr.length > 0 ? currentWordArr.length - 1 : 0) : currentIndex;
+            
+            const noteX = startX + activeIndex * spacing;
+            let translate = 0;
+            
+            const svg = document.getElementById('sheetMusic');
+            const wrapper = document.getElementById('sheetMusicWrapper');
+            
+            if (svg && wrapper) {
+                const svgRatio = 1100 / svg.clientWidth;
+                const visibleWidthInSvg = wrapper.clientWidth * svgRatio;
+                // Keep note at roughly the center of the visible area
+                const halfwayMark = visibleWidthInSvg / 2;
+                
+                if (noteX > halfwayMark) {
+                    translate = halfwayMark - noteX;
+                }
+            }
+            
+            notesLayer.style.transform = `translateX(${translate}px)`;
+        }
+        
+        let score = 0;
+        let mistakes = 0;
+        let rollingNPMTimestamps = [];
+        let randomSessionStartTime = 0;
+        let randomStopwatchInterval = null;
+        let wordStartTime = 0;
+        let recentWordsTimes = [];
+        let isPaused = false;
+        let pauseStartTime = 0;
+
+        // DOM Elements
+        const notesLayer = document.getElementById('notesLayer');
+        const scoreVal = document.getElementById('scoreVal');
+        const mistakeVal = document.getElementById('mistakeVal');
+        const npmContainer = document.getElementById('npmContainer');
+        const npmVal = document.getElementById('npmVal');
+        const spnVal = document.getElementById('spnVal');
+        const randomStopwatchVal = document.getElementById('randomStopwatchVal');
+        const wordsTimerContainer = document.getElementById('wordsTimerContainer');
+        const wordsTimerList = document.getElementById('wordsTimerList');
+        const overlay = document.getElementById('overlay');
+        const overlayText = document.getElementById('overlayText');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const toastEl = document.getElementById('toast');
+        const statsModal = document.getElementById('statsModal');
+        const keyboardMainDiv = document.getElementById('virtualKeyboardMain');
+        const keyboardAccDiv = document.getElementById('virtualKeyboardAcc');
+        const modeSelect = document.getElementById('modeSelect');
+        const wordLengthSelect = document.getElementById('wordLengthSelect');
+        const wordLengthContainer = document.getElementById('wordLengthContainer');
+        const wordLengthDivider = document.getElementById('wordLengthDivider');
+        const wordCountLabel = document.getElementById('wordCountLabel');
+        const recordingDisplay = document.getElementById('recordingDisplay');
+        const flashToggle = document.getElementById('flashToggle');
+        const overlayToggle = document.getElementById('overlayToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        const accidentalToggleCheck = document.getElementById('accidentalToggleCheck');
+        const strictOctaveToggle = document.getElementById('strictOctaveToggle');
+        const persistentAccidentalToggle = document.getElementById('persistentAccidentalToggle');
+
+        let currentWordYs = [];
+        let noteStats = {};
+        let rangeTopY = -20;
+        let rangeBottomY = 220;
+        let isRangeVisible = false;
+        let isStatsVisible = false;
+        
+        const btnToggleRange = document.getElementById('btnToggleRange');
+        const btnToggleStats = document.getElementById('btnToggleStats');
+        const rangeSelectorGroup = document.getElementById('rangeSelectorGroup');
+        const statsViewLayer = document.getElementById('statsViewLayer');
+        
+        function getNoteKey(char, octave, acc) { return `${char}${acc}${octave}`; }
+        function parseNoteKey(key) { 
+            const match = key.match(/^([a-g])([#b]?)(-?\d+)$/);
+            if(match) return {char: match[1], acc: match[2], octave: parseInt(match[3])};
+            return null;
+        }
+        
+        function savePreferences() {
+            const prefs = {
+                overlay: overlayToggle.checked,
+                flash: flashToggle.checked,
+                sound: soundToggle.checked,
+                accidental: accidentalToggleCheck.checked,
+                strict: strictOctaveToggle.dataset.userChecked === 'true',
+                persistent: persistentAccidentalToggle.checked,
+                alwaysShow: alwaysShowToggle.checked,
+                mode: modeSelect.value,
+                keyMap: keyMap,
+                noteStats: noteStats,
+                rangeTopY: rangeTopY,
+                rangeBottomY: rangeBottomY,
+                isRangeVisible: isRangeVisible,
+                wordLength: wordLengthSelect.value
+            };
+            localStorage.setItem('speedSheetsPrefs', JSON.stringify(prefs));
+        }
+
+        [overlayToggle, flashToggle, soundToggle, accidentalToggleCheck, persistentAccidentalToggle, alwaysShowToggle, modeSelect].forEach(el => {
+            el.addEventListener('change', savePreferences);
+        });
+        strictOctaveToggle.addEventListener('change', savePreferences);
+        alwaysShowToggle.addEventListener('change', (e) => {
+            const show = e.target.checked;
+            document.querySelectorAll('.note-letter').forEach((el, idx) => {
+                const noteGroup = el.closest('g');
+                const noteId = parseInt(noteGroup.id.replace('note-', ''));
+                if (show) {
+                    el.classList.remove('opacity-0');
+                } else {
+                    if (noteId >= currentIndex || !overlayToggle.checked) {
+                        el.classList.add('opacity-0');
+                    }
+                }
+            });
+        });
+
+        // --- Stats & Violin Plot ---
+        btnToggleStats.addEventListener('click', () => {
+            isStatsVisible = !isStatsVisible;
+            statsViewLayer.classList.toggle('hidden', !isStatsVisible);
+            btnToggleStats.classList.toggle('bg-indigo-600', isStatsVisible);
+            btnToggleStats.classList.toggle('text-white', isStatsVisible);
+            if (isStatsVisible) updateStatsView();
+        });
+
+        function updateStatsView() {
+            statsViewLayer.innerHTML = '';
+            if (!isStatsVisible) return;
+            
+            const statsByY = {};
+            for (const [key, stat] of Object.entries(noteStats)) {
+                const note = parseNoteKey(key);
+                if (!note) continue;
+                if (isRangeVisible && !isNoteInRange(note.char, note.octave)) continue;
+                const y = getNoteY(note.char, note.octave);
+                // We map all chords to base Y for visualization simplicity
+                const yVal = Array.isArray(y) ? y[0] : y; 
+                if (!statsByY[yVal]) statsByY[yVal] = { hits: 0, misses: 0 };
+                statsByY[yVal].hits += stat.hits || 0;
+                statsByY[yVal].misses += stat.misses || 0;
+            }
+            
+            // Calculate curve points to properly bound the max width
+            const curvePoints = [];
+            for (let y = -50; y <= 250; y += 5) {
+                let hitVal = 0;
+                let missVal = 0;
+                for (const [sy, st] of Object.entries(statsByY)) {
+                    const dist = Math.abs(y - parseFloat(sy));
+                    if (dist < 15) {
+                        const weight = (15 - dist) / 15;
+                        hitVal += st.hits * weight;
+                        missVal += st.misses * weight;
+                    }
+                }
+                curvePoints.push({y, hitVal, missVal});
+            }
+            
+            const maxVal = Math.max(1, ...curvePoints.map(p => Math.max(p.hitVal, p.missVal)));
+            const scale = 50 / maxVal; // max 50px wide blobs
+            
+            const createPath = (color, isMiss) => {
+                let d = "";
+                let started = false;
+                for (const p of curvePoints) {
+                    const width = (isMiss ? p.missVal : p.hitVal) * scale;
+                    const x = 120 + (isMiss ? -width : width);
+                    if (!started) {
+                        d += `M 120 ${p.y} `;
+                        started = true;
+                    }
+                    d += `L ${x} ${p.y} `;
+                }
+                d += `L 120 250 Z`;
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", d);
+                path.setAttribute("fill", color);
+                return path;
+            };
+            
+            statsViewLayer.appendChild(createPath('rgba(239, 68, 68, 0.6)', true)); // Red Misses left
+            statsViewLayer.appendChild(createPath('rgba(34, 197, 94, 0.6)', false)); // Green Hits right
+            
+            // Add center line
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", "120"); line.setAttribute("y1", "-50");
+            line.setAttribute("x2", "120"); line.setAttribute("y2", "250");
+            line.setAttribute("stroke", "rgba(0,0,0,0.2)");
+            statsViewLayer.appendChild(line);
+        }
+
+        function recordStat(char, octave, acc, isCorrect) {
+            const key = getNoteKey(char, octave, acc);
+            if (!noteStats[key]) noteStats[key] = { hits: 0, misses: 0, lastPlayed: 0 };
+            if (isCorrect) noteStats[key].hits++;
+            else noteStats[key].misses++;
+            noteStats[key].lastPlayed = Date.now();
+            if (typeof savePreferences === 'function') savePreferences();
+            if (isStatsVisible) updateStatsView();
+        }
+
+        // --- Range Selector ---
+        btnToggleRange.addEventListener('click', () => {
+            isRangeVisible = !isRangeVisible;
+            rangeSelectorGroup.classList.toggle('hidden', !isRangeVisible);
+            btnToggleRange.classList.toggle('text-indigo-600', isRangeVisible);
+            updateRangeUI();
+            if (isRangeVisible) {
+                clampNotesToRange();
+            }
+            if (typeof savePreferences === 'function') savePreferences();
+        });
+
+        function updateRangeUI() {
+            document.getElementById('rangeTopHit').setAttribute('y', rangeTopY - 20);
+            document.getElementById('rangeTopLine').setAttribute('y1', rangeTopY);
+            document.getElementById('rangeTopLine').setAttribute('y2', rangeTopY);
+            document.getElementById('rangeTopHandle').setAttribute('points', `70,${rangeTopY} 90,${rangeTopY-10} 90,${rangeTopY+10}`);
+            
+            document.getElementById('rangeBottomHit').setAttribute('y', rangeBottomY - 20);
+            document.getElementById('rangeBottomLine').setAttribute('y1', rangeBottomY);
+            document.getElementById('rangeBottomLine').setAttribute('y2', rangeBottomY);
+            document.getElementById('rangeBottomHandle').setAttribute('points', `70,${rangeBottomY} 90,${rangeBottomY-10} 90,${rangeBottomY+10}`);
+            
+            document.getElementById('rangeVerticalLine').setAttribute('y1', rangeTopY);
+            document.getElementById('rangeVerticalLine').setAttribute('y2', rangeBottomY);
+            
+            document.getElementById('rangeBg').setAttribute('y', rangeTopY);
+            document.getElementById('rangeBg').setAttribute('height', Math.max(0, rangeBottomY - rangeTopY));
+
+            if (isStatsVisible) updateStatsView();
+        }
+
+        let dragHandle = null;
+        document.getElementById('sheetMusic').addEventListener('pointerdown', (e) => {
+            if (isTimeTrial || isSpeedRun) return;
+            if (!isRangeVisible) return;
+            const target = e.target.id;
+            if (target === 'rangeTopGroup' || target === 'rangeTopHit' || target === 'rangeTopHandle' || target === 'rangeTopLine') {
+                dragHandle = 'top';
+                e.preventDefault();
+                document.getElementById('sheetMusic').setPointerCapture(e.pointerId);
+            }
+            if (target === 'rangeBottomGroup' || target === 'rangeBottomHit' || target === 'rangeBottomHandle' || target === 'rangeBottomLine') {
+                dragHandle = 'bottom';
+                e.preventDefault();
+                document.getElementById('sheetMusic').setPointerCapture(e.pointerId);
+            }
+        });
+        document.getElementById('sheetMusic').addEventListener('pointermove', (e) => {
+            if (!dragHandle) return;
+            e.preventDefault();
+            const svg = document.getElementById('sheetMusic');
+            const pt = svg.createSVGPoint();
+            pt.x = e.clientX; pt.y = e.clientY;
+            const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+            let y = Math.round(svgP.y / 5) * 5; // snap to 5px
+            
+            if (dragHandle === 'top') {
+                rangeTopY = Math.min(y, rangeBottomY - 10);
+            } else {
+                rangeBottomY = Math.max(y, rangeTopY + 10);
+            }
+            updateRangeUI();
+        });
+        document.getElementById('sheetMusic').addEventListener('pointerup', (e) => {
+            if (dragHandle) {
+                document.getElementById('sheetMusic').releasePointerCapture(e.pointerId);
+                dragHandle = null;
+                clampNotesToRange();
+                if (typeof savePreferences === 'function') savePreferences();
+            }
+        });
+        document.getElementById('sheetMusic').addEventListener('pointercancel', (e) => {
+            if (dragHandle) {
+                document.getElementById('sheetMusic').releasePointerCapture(e.pointerId);
+                dragHandle = null;
+                clampNotesToRange();
+                if (typeof savePreferences === 'function') savePreferences();
+            }
+        });
+
+        function isNoteInRange(char, octave) {
+            const yArr = getNoteY(char, octave);
+            const y = Array.isArray(yArr) ? yArr[0] : yArr;
+            return y >= rangeTopY && y <= rangeBottomY;
+        }
+
+        function getPossibleNotesInRange() {
+            let possible = [];
+            for (let oct = -3; oct <= 3; oct++) {
+                for (const char of keys) {
+                    if (isNoteInRange(char, oct)) {
+                        possible.push({char, octave: oct});
+                    }
+                }
+            }
+            return possible.length > 0 ? possible : [{char: 'c', octave: 0}]; // fallback
+        }
+        
+        function getSRSPick(possibleNotes) {
+            let weights = possibleNotes.map(n => {
+                const key = getNoteKey(n.char, n.octave, '');
+                const st = noteStats[key] || { hits: 0, misses: 0, lastPlayed: 0 };
+                const total = st.hits + st.misses;
+                const errorRate = total === 0 ? 0.5 : st.misses / total;
+                const timeDiff = (Date.now() - st.lastPlayed) / (1000 * 60 * 60); // hours
+                // Weight formula: base + (errorRate * 10) + (timeDiff * 0.1)
+                return 1 + (errorRate * 10) + (timeDiff * 0.1);
+            });
+            const sum = weights.reduce((a, b) => a + b, 0);
+            let rnd = Math.random() * sum;
+            for (let i=0; i<possibleNotes.length; i++) {
+                rnd -= weights[i];
+                if (rnd <= 0) return possibleNotes[i];
+            }
+            return possibleNotes[0];
+        }
+
+        function clampNotesToRange() {
+            if (!isRangeVisible) return;
+            const mode = modeSelect.value;
+            if (mode !== 'random' && mode !== 'training' && mode !== 'words') return;
+            
+            const possible = getPossibleNotesInRange();
+            let changed = false;
+
+            if (mode === 'words') {
+                const validChars = new Set(possible.map(p => p.char));
+                let canSalvage = true;
+                for (let i = currentIndex; i < currentWordArr.length; i++) {
+                    if (!validChars.has(currentWordArr[i].char)) {
+                        canSalvage = false;
+                        break;
+                    }
+                }
+                if (!canSalvage) {
+                    generateNewWord();
+                    return;
+                }
+                
+                for (let i = currentIndex; i < currentWordArr.length; i++) {
+                    const note = currentWordArr[i];
+                    if (!isNoteInRange(note.char, note.octave)) {
+                        const validOcts = possible.filter(p => p.char === note.char).map(p => p.octave);
+                        if (validOcts.length > 0) {
+                            note.octave = validOcts[Math.floor(Math.random() * validOcts.length)];
+                            changed = true;
+                        }
+                    }
+                }
+            } else {
+                const accs = accidentalToggleCheck.checked ? ['', '#', 'b'] : [''];
+                for (let i = currentIndex; i < currentWordArr.length; i++) {
+                    const note = currentWordArr[i];
+                    if (!isNoteInRange(note.char, note.octave)) {
+                        let base;
+                        if (mode === 'training') {
+                            base = getSRSPick(possible);
+                        } else {
+                            base = possible[Math.floor(Math.random() * possible.length)];
+                        }
+                        const acc = accs[Math.floor(Math.random()*accs.length)];
+                        currentWordArr[i] = {char: base.char, acc, octave: base.octave};
+                        changed = true;
+                    }
+                }
+            }
+            
+            if (changed) {
+                notesLayer.style.transition = 'none';
+                renderGrandStaffWord(currentWordArr);
+                void notesLayer.offsetWidth;
+                notesLayer.style.transition = 'transform 0.3s ease-in-out';
+                updateScroll();
+                
+                // Re-apply green color for notes already submitted
+                for (let i = 0; i < currentIndex; i++) {
+                    const el = document.getElementById(`note-${i}`);
+                    if (el) {
+                        el.setAttribute('class', 'text-green-500 transition-colors duration-200');
+                        if (overlayToggle.checked) {
+                            const textEl = el.querySelector('.note-letter');
+                            if (textEl) textEl.classList.remove('opacity-0');
+                        }
+                    }
+                }
+            }
+        }
+
+        let audioCtx = null;
+        
+        // Math-based position and midi mappings
+        const noteMidiOffsets = {'c': 60, 'd': 62, 'e': 64, 'f': 65, 'g': 67, 'a': 69, 'b': 71};
+        const noteYOffsets = {'c': 0, 'd': 1, 'e': 2, 'f': 3, 'g': 4, 'a': 5, 'b': 6};
+        
+        function getNoteY(char, octave) {
+            return char.split('+').map(c => 100 - (octave * 35) - (noteYOffsets[c] * 5));
+        }
+        function getNoteMidi(char, octave, acc) {
+            return char.split('+').map(c => {
+                let midi = noteMidiOffsets[c] + (octave * 12);
+                if (acc === '#') midi += 1;
+                if (acc === 'b') midi -= 1;
+                return midi;
+            });
+        }
+
+        function playNote(midiNumOrArray) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const midis = Array.isArray(midiNumOrArray) ? midiNumOrArray : [midiNumOrArray];
+            
+            midis.forEach(midiNum => {
+                const freq = 440 * Math.pow(2, (midiNum - 69) / 12);
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            });
+        }
+        function _playNoteOld() {
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function updateOctaveUI() {
+            if (currentOctave > 3) currentOctave = 3;
+            if (currentOctave < -3) currentOctave = -3;
+            
+            const boxY = 63 - (currentOctave * 35);
+            
+            const highlight = document.getElementById('octaveHighlight');
+            if (highlight) {
+                highlight.setAttribute('y', boxY);
+            }
+            const label = document.getElementById('octaveLabel');
+            if (label) {
+                label.textContent = "Октава: " + (currentOctave >= 0 ? "+" + currentOctave : currentOctave);
+            }
+        }
+
+        // Init Virtual Keyboard
+        const keys = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+        keys.forEach(k => {
+            const btn = document.createElement('button');
+            btn.id = `btn-${k}`;
+            btn.textContent = k.toUpperCase();
+            btn.className = "w-10 h-12 md:w-14 md:h-16 bg-white border-2 border-slate-200 rounded-xl shadow-sm font-bold text-xl text-slate-700 hover:border-indigo-400 hover:text-indigo-600 hover:-translate-y-1 transition-all active:translate-y-0 active:bg-slate-50";
+            btn.onclick = () => handleInput(k);
+            keyboardMainDiv.appendChild(btn);
+        });
+
+        let keyMap = {
+            flat: 'l',
+            sharp: ';',
+            down: 'j',
+            up: 'k'
+        };
+        let rebindingKey = null;
+
+        const accKeysConfig = [
+            { id: 'flat', labelFn: () => `♭ (${keyMap.flat === ' ' ? 'Пробел' : keyMap.flat.toUpperCase()})` },
+            { id: 'sharp', labelFn: () => `♯ (${keyMap.sharp === ' ' ? 'Пробел' : keyMap.sharp.toUpperCase()})` },
+            { id: 'down', labelFn: () => `▼ (${keyMap.down === ' ' ? 'Пробел' : keyMap.down.toUpperCase()})` },
+            { id: 'up', labelFn: () => `▲ (${keyMap.up === ' ' ? 'Пробел' : keyMap.up.toUpperCase()})` }
+        ];
+
+        function renderAccKeys() {
+            keyboardAccDiv.innerHTML = '';
+            accKeysConfig.forEach(k => {
+                const btn = document.createElement('button');
+                btn.id = `btn-${k.id}`;
+                btn.textContent = rebindingKey === k.id ? 'Нажмите клавишу...' : k.labelFn();
+                btn.className = "w-16 h-12 md:w-20 md:h-16 bg-white border-2 border-slate-200 rounded-xl shadow-sm font-bold text-sm md:text-lg text-slate-700 hover:border-indigo-400 hover:text-indigo-600 hover:-translate-y-1 transition-all active:translate-y-0 active:bg-slate-50 select-none";
+                if (rebindingKey === k.id) {
+                    btn.classList.add('border-indigo-500', 'bg-indigo-50');
+                }
+                btn.onclick = () => {
+                    if (rebindingKey) return;
+                    handleInput(keyMap[k.id]);
+                };
+                btn.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    rebindingKey = k.id;
+                    renderAccKeys();
+                };
+                keyboardAccDiv.appendChild(btn);
+            });
+            updateToggleUI();
+        }
+        renderAccKeys();
+
+        function rebuildRecording() {
+            currentWordArr = [];
+            freePlayYs = [];
+            totalNotesPlayed = 0;
+            currentOctave = 0;
+            accidentalToggle = null;
+            const tokens = recordedString.match(/[a-g](?:\+[a-g])*|[l;jk]/g) || [];
+            
+            for (let i = 0; i < tokens.length; i++) {
+                let token = tokens[i];
+                if (token === 'k') { currentOctave = Math.min(3, currentOctave + 1); }
+                else if (token === 'j') { currentOctave = Math.max(-3, currentOctave - 1); }
+                else if (token === 'l') { accidentalToggle = accidentalToggle === 'b' ? null : 'b'; }
+                else if (token === ';') { accidentalToggle = accidentalToggle === '#' ? null : '#'; }
+                else {
+                    let char = token; 
+                    let noteObj = { char, acc: accidentalToggle || '', octave: currentOctave, absIndex: totalNotesPlayed++ };
+                    if (!persistentAccidentalToggle.checked) accidentalToggle = null;
+                    currentWordArr.push(noteObj);
+                    const y = getNoteY(noteObj.char, noteObj.octave);
+                    freePlayYs.push(y);
+                    if (currentWordArr.length > 20) {
+                        currentWordArr.shift();
+                        freePlayYs.shift();
+                    }
+                }
+            }
+            updateOctaveUI();
+            updateToggleUI();
+            notesLayer.style.transition = 'none';
+            renderGrandStaffWord(currentWordArr, freePlayYs);
+            void notesLayer.offsetWidth;
+            notesLayer.style.transition = 'transform 0.3s ease-in-out';
+            
+            currentWordArr.forEach((_, i) => {
+                let el = document.getElementById(`note-${i}`);
+                if(el) {
+                    el.setAttribute('class', 'text-green-500 transition-colors duration-200');
+                    if (overlayToggle.checked) {
+                        const textEl = el.querySelector('.note-letter');
+                        if (textEl) textEl.classList.remove('opacity-0');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if(!statsModal.classList.contains('hidden')) return; // ignore if modal open
+            
+            if (e.key === ' ' && !rebindingKey) {
+                e.preventDefault();
+                // Avoid pausing during initial countdown
+                if (!isPaused && !overlay.classList.contains('hidden') && overlayText.textContent !== "ПАУЗА") return;
+
+                isPaused = !isPaused;
+                if (isPaused) {
+                    pauseStartTime = Date.now();
+                    overlay.classList.remove('hidden');
+                    overlayText.textContent = "ПАУЗА";
+                } else {
+                    const pauseDuration = Date.now() - pauseStartTime;
+                    if (randomSessionStartTime > 0) randomSessionStartTime += pauseDuration;
+                    if (wordStartTime > 0) wordStartTime += pauseDuration;
+                    if (speedRunStartTime > 0) speedRunStartTime += pauseDuration;
+                    if (rollingNPMTimestamps.length > 0) {
+                        for (let i = 0; i < rollingNPMTimestamps.length; i++) {
+                            rollingNPMTimestamps[i] += pauseDuration;
+                        }
+                    }
+                    overlay.classList.add('hidden');
+                }
+                return;
+            }
+            if (isPaused) return;
+
+            if (e.key === 'Backspace' && modeSelect.value === 'recording') {
+                if (recordedString.length > 0) {
+                    let tokens = recordedString.match(/[a-g](?:\+[a-g])*|[l;jk]/g) || [];
+                    if (tokens.length > 0) tokens.pop();
+                    recordedString = tokens.join('');
+                    recordingDisplay.textContent = recordedString;
+                    rebuildRecording();
+                }
+                return;
+            }
+
+            const k = e.key.toLowerCase();
+
+            if (rebindingKey) {
+                e.preventDefault();
+                if (['a','b','c','d','e','f','g'].includes(k)) {
+                    showToast("Клавиши A-G зарезервированы для нот!");
+                    rebindingKey = null;
+                    renderAccKeys();
+                    return;
+                }
+                if (['s','o','m','p'].includes(k) || e.key === 'M') {
+                     showToast("Эта клавиша зарезервирована для горячих клавиш!");
+                     rebindingKey = null;
+                     renderAccKeys();
+                     return;
+                }
+                keyMap[rebindingKey] = e.key === ' ' ? ' ' : k;
+                rebindingKey = null;
+                renderAccKeys();
+                if (typeof savePreferences === 'function') savePreferences();
+                return;
+            }
+
+            if (e.key === 's') { soundToggle.click(); return; }
+            if (e.key === 'o') { if (!strictOctaveToggle.disabled) strictOctaveToggle.click(); return; }
+            if (e.key === 'p') { persistentAccidentalToggle.click(); return; }
+            if (e.key === 'm') { 
+                if (isTimeTrial || isSpeedRun) return;
+                do {
+                    modeSelect.selectedIndex = (modeSelect.selectedIndex + 1) % modeSelect.options.length;
+                } while (modeSelect.value === 'practice' && practiceArr.length === 0);
+                modeSelect.dispatchEvent(new Event('change'));
+                return;
+            }
+            if (e.key === 'M') {
+                if (isTimeTrial || isSpeedRun) return;
+                do {
+                    modeSelect.selectedIndex = (modeSelect.selectedIndex - 1 + modeSelect.options.length) % modeSelect.options.length;
+                } while (modeSelect.value === 'practice' && practiceArr.length === 0);
+                modeSelect.dispatchEvent(new Event('change'));
+                return;
+            }
+
+            if (['a','b','c','d','e','f','g'].includes(k)) {
+                e.preventDefault();
+                if (!chordTimeout) {
+                    chordTimeout = setTimeout(() => {
+                        chordTimeout = null;
+                        const chord = Array.from(chordChars).sort().join('+');
+                        chordChars.clear();
+                        handleInput(chord);
+                    }, 40);
+                }
+                chordChars.add(k);
+            } else if ([keyMap.flat, keyMap.sharp, keyMap.down, keyMap.up].includes(k)) {
+                e.preventDefault();
+                handleInput(k);
+            }
+        });
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.style.transform = 'translate(-50%, 0)';
+            toastEl.style.opacity = '1';
+            setTimeout(() => {
+                toastEl.style.transform = 'translate(-50%, 6rem)';
+                toastEl.style.opacity = '0';
+            }, 3000);
+        }
+
+        function updateToggleUI() {
+            const btnFlat = document.getElementById('btn-flat');
+            const btnSharp = document.getElementById('btn-sharp');
+            
+            if (btnFlat) {
+                if (accidentalToggle === 'b') {
+                    btnFlat.classList.add('bg-indigo-100', 'border-indigo-500', 'text-indigo-700');
+                    btnFlat.classList.remove('bg-white', 'border-slate-200', 'text-slate-700');
+                } else {
+                    btnFlat.classList.remove('bg-indigo-100', 'border-indigo-500', 'text-indigo-700');
+                    btnFlat.classList.add('bg-white', 'border-slate-200', 'text-slate-700');
+                }
+            }
+            if (btnSharp) {
+                if (accidentalToggle === '#') {
+                    btnSharp.classList.add('bg-indigo-100', 'border-indigo-500', 'text-indigo-700');
+                    btnSharp.classList.remove('bg-white', 'border-slate-200', 'text-slate-700');
+                } else {
+                    btnSharp.classList.remove('bg-indigo-100', 'border-indigo-500', 'text-indigo-700');
+                    btnSharp.classList.add('bg-white', 'border-slate-200', 'text-slate-700');
+                }
+            }
+        }
+
+        function updateWordFiltersUI() {
+            scaleOptionsContainer.classList.toggle('hidden', modeSelect.value !== 'scale');
+            if (modeSelect.value === 'words') {
+                wordLengthContainer.style.display = 'flex';
+                wordLengthDivider.style.display = 'block';
+                
+                let validWords = words;
+                if (isRangeVisible) {
+                    const possible = getPossibleNotesInRange();
+                    const validChars = new Set(possible.map(p => p.char));
+                    validWords = validWords.filter(w => [...w].every(c => validChars.has(c)));
+                }
+
+                if (wordLengthSelect.value !== 'all') {
+                    const targetLen = parseInt(wordLengthSelect.value);
+                    validWords = validWords.filter(w => w.length >= targetLen);
+                }
+                wordCountLabel.textContent = validWords.length;
+            } else {
+                wordLengthContainer.style.display = 'none';
+                wordLengthDivider.style.display = 'none';
+            }
+        }
+
+        function generateNewWord(isSpeedRunStart = false, keepStats = false) {
+            updateWordFiltersUI();
+            pendingBaseNote = null;
+            accidentalToggle = null;
+            updateToggleUI();
+            
+            const mode = modeSelect.value;
+            const isStrictForced = mode !== 'words' && mode !== 'random' && mode !== 'training' && mode !== 'scale' && mode !== 'a-g';
+            
+            strictOctaveToggle.disabled = isStrictForced;
+            strictOctaveToggle.parentElement.style.opacity = isStrictForced ? '0.5' : '1';
+            
+            if (isStrictForced) {
+                if (!strictOctaveToggle.checked) {
+                    strictOctaveToggle.checked = true;
+                    strictOctaveToggle.dispatchEvent(new Event('change'));
+                }
+            } else {
+                const userWantedIt = strictOctaveToggle.dataset.userChecked === 'true';
+                if (strictOctaveToggle.checked !== userWantedIt) {
+                    strictOctaveToggle.checked = userWantedIt;
+                    strictOctaveToggle.dispatchEvent(new Event('change'));
+                }
+            }
+
+            document.getElementById('btnTrial').classList.toggle('hidden', mode === 'recording');
+            document.getElementById('btnSpeedRun').classList.toggle('hidden', mode === 'recording');
+            
+            document.getElementById('btnLoadedSong').classList.toggle('hidden', practiceArr.length === 0 || mode === 'recording');
+            document.getElementById('btnClearRecording').classList.toggle('hidden', mode !== 'recording');
+            document.getElementById('btnShareRecording').classList.toggle('hidden', mode !== 'recording');
+            recordingDisplay.classList.toggle('hidden', mode !== 'recording');
+            
+            const showStats = ['random', 'words', 'practice', 'training', 'scale', 'a-g'].includes(mode) && !isTimeTrial && !isSpeedRun;
+            npmContainer.classList.toggle('hidden', !showStats);
+            if (!keepStats) {
+                rollingNPMTimestamps = [];
+                npmVal.textContent = "0";
+                if (spnVal) spnVal.textContent = "0.00";
+                if (randomStopwatchVal) randomStopwatchVal.textContent = "0.0 с";
+                clearInterval(randomStopwatchInterval);
+                randomSessionStartTime = 0;
+            }
+
+            wordsTimerContainer.classList.toggle('hidden', !showStats);
+            if (showStats) {
+                const titleEl = wordsTimerContainer.querySelector('p');
+                if (titleEl) {
+                    titleEl.textContent = "Последние попытки";
+                }
+            }
+            if (!keepStats && !showStats) {
+                recentWordsTimes = [];
+                wordsTimerList.innerHTML = '';
+            }
+
+            if (mode === 'freeplay' || mode === 'recording') {
+                currentWordArr = [];
+                freePlayYs = [];
+                totalNotesPlayed = 0;
+                if (mode === 'recording') {
+                    recordedString = "";
+                    recordingDisplay.textContent = "";
+                }
+                notesLayer.style.transition = 'none';
+                renderGrandStaffWord([]);
+                void notesLayer.offsetWidth;
+                notesLayer.style.transition = 'transform 0.3s ease-in-out';
+                return;
+            }
+            if (mode === 'practice') {
+                currentWordArr = [...practiceArr];
+                currentIndex = 0;
+                notesLayer.style.transition = 'none';
+                renderGrandStaffWord(currentWordArr);
+                void notesLayer.offsetWidth;
+                notesLayer.style.transition = 'transform 0.3s ease-in-out';
+                wordStartTime = Date.now();
+                return;
+            }
+
+            if (mode === 'scale') {
+                let rootStr = scaleRootSelect.value;
+                let typeStr = scaleTypeSelect.value;
+                let rootChar = rootStr[0];
+                let rootAcc = rootStr.length > 1 ? rootStr[1] : '';
+                
+                const typeNameMap = { 'major': 'Маж', 'minor': 'Мин', 'harmonic': 'Гарм. мин', 'melodic': 'Мелод. мин' };
+                window.currentScaleName = `${rootStr.toUpperCase().replace('#', '♯')} ${typeNameMap[typeStr]}`;
+                
+                const noteOrder = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
+                const getInterval = (c1, c2) => {
+                    const i1 = noteOrder.indexOf(c1); const i2 = noteOrder.indexOf(c2);
+                    return (i2 - i1 + 7) % 7;
+                };
+                
+                const majorSteps = [2, 2, 1, 2, 2, 2, 1];
+                const minorSteps = [2, 1, 2, 2, 1, 2, 2];
+                const harmonicSteps = [2, 1, 2, 2, 1, 3, 1];
+                const melodicSteps = [2, 1, 2, 2, 2, 2, 1]; // Only going up
+                
+                let steps = majorSteps;
+                if (typeStr === 'minor') steps = minorSteps;
+                if (typeStr === 'harmonic') steps = harmonicSteps;
+                if (typeStr === 'melodic') steps = melodicSteps;
+                
+                const allNotes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
+                const flatMap = {'c#':'db', 'd#':'eb', 'f#':'gb', 'g#':'ab', 'a#':'bb'};
+                const isFlatScale = ['f', 'bb', 'eb', 'ab', 'db', 'gb', 'd minor', 'g minor', 'c minor', 'f minor', 'bb minor', 'eb minor'].includes((rootStr + ' ' + typeStr).toLowerCase());
+                
+                let rootIndex = allNotes.indexOf(rootChar + (rootAcc === '#' ? '#' : ''));
+                if (rootIndex === -1 && rootAcc === 'b') {
+                    for (let n of allNotes) { if (flatMap[n] === rootChar+rootAcc) rootIndex = allNotes.indexOf(n); }
+                }
+                
+                let scaleUp = [];
+                let currentNoteIndex = rootIndex;
+                let currentOct = 0; // default start
+                let currentCharIndex = noteOrder.indexOf(rootChar);
+                
+                for (let i = 0; i <= 7; i++) {
+                    let char = noteOrder[(currentCharIndex + i) % 7];
+                    let rawNote = allNotes[currentNoteIndex % 12];
+                    
+                    let acc = '';
+                    if (rawNote.length > 1) {
+                        acc = isFlatScale ? 'b' : '#';
+                    }
+                    
+                    if (i > 0 && noteOrder.indexOf(char) < noteOrder.indexOf(scaleUp[scaleUp.length-1].char)) {
+                        currentOct++;
+                    }
+                    
+                    scaleUp.push({char, acc, octave: currentOct});
+                    if (i < 7) {
+                        currentNoteIndex += steps[i];
+                    }
+                }
+                
+                let scaleDown = [...scaleUp].reverse();
+                
+                // Melodic minor goes down as natural minor
+                if (typeStr === 'melodic') {
+                    scaleDown = [];
+                    currentNoteIndex = rootIndex + 12; // Octave up
+                    let downSteps = minorSteps.slice().reverse();
+                    currentOct = scaleUp[scaleUp.length-1].octave;
+                    
+                    for (let i = 0; i <= 7; i++) {
+                        let char = noteOrder[(currentCharIndex + 7 - i) % 7];
+                        let rawNote = allNotes[currentNoteIndex % 12];
+                        let acc = rawNote.length > 1 ? (isFlatScale ? 'b' : '#') : '';
+                        
+                        if (i > 0 && noteOrder.indexOf(char) > noteOrder.indexOf(scaleDown[scaleDown.length-1].char)) {
+                            currentOct--;
+                        }
+                        
+                        scaleDown.push({char, acc, octave: currentOct});
+                        if (i < 7) {
+                            currentNoteIndex -= downSteps[i];
+                        }
+                    }
+                }
+                
+                if (scaleDown.length > 0) scaleDown.shift();
+                currentWordArr = scaleUp.concat(scaleDown);
+                
+            } else if (mode === 'a-g') {
+                currentWordArr = [];
+                const useAcc = accidentalToggleCheck.checked;
+                const noteOrder = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
+                
+                let scaleUp = [];
+                // From C octave -2 to C octave 2 (or highest based on constraints)
+                for (let oct = -2; oct <= 2; oct++) {
+                    for (let i = 0; i < noteOrder.length; i++) {
+                        let baseChar = noteOrder[i];
+                        scaleUp.push({char: baseChar, acc: '', octave: oct});
+                        if (useAcc && baseChar !== 'e' && baseChar !== 'b') {
+                            scaleUp.push({char: baseChar, acc: '#', octave: oct});
+                        }
+                    }
+                }
+                scaleUp.push({char: 'c', acc: '', octave: 3}); // Top note
+                
+                let scaleDown = [...scaleUp].reverse();
+                scaleDown.shift();
+                currentWordArr = scaleUp.concat(scaleDown);
+            } else if (mode === 'random') {
+                let len = 20;
+                if (isSpeedRun) len = 100;
+                if (isTimeTrial) len = 500;
+                currentWordArr = [];
+                const accs = accidentalToggleCheck.checked ? ['', '#', 'b'] : [''];
+                const possible = getPossibleNotesInRange();
+                for(let i=0; i<len; i++) {
+                    const base = possible[Math.floor(Math.random() * possible.length)];
+                    const acc = accs[Math.floor(Math.random()*accs.length)];
+                    currentWordArr.push({char: base.char, acc, octave: base.octave});
+                }
+            } else if (mode === 'training') {
+                let len = 20;
+                if (isSpeedRun) len = 100;
+                if (isTimeTrial) len = 500;
+                currentWordArr = [];
+                const accs = accidentalToggleCheck.checked ? ['', '#', 'b'] : [''];
+                const possible = getPossibleNotesInRange();
+                for(let i=0; i<len; i++) {
+                    const base = getSRSPick(possible);
+                    const acc = accs[Math.floor(Math.random()*accs.length)];
+                    currentWordArr.push({char: base.char, acc, octave: base.octave});
+                }
+            } else { // words
+                let validWords = words;
+                let possible = null;
+                if (isRangeVisible) {
+                    possible = getPossibleNotesInRange();
+                    const validChars = new Set(possible.map(p => p.char));
+                    validWords = validWords.filter(w => [...w].every(c => validChars.has(c)));
+                }
+                if (wordLengthSelect.value !== 'all') {
+                    const targetLen = parseInt(wordLengthSelect.value);
+                    validWords = validWords.filter(w => w.length >= targetLen);
+                }
+                if (validWords.length === 0) validWords = ['c']; // Fallback
+                const word = validWords[Math.floor(Math.random() * validWords.length)];
+                currentWordArr = [...word].map(char => {
+                    let oct = Math.floor(Math.random() * 3) - 1;
+                    if (isRangeVisible && possible) {
+                        const validOcts = possible.filter(p => p.char === char).map(p => p.octave);
+                        if (validOcts.length > 0) {
+                            oct = validOcts[Math.floor(Math.random() * validOcts.length)];
+                        }
+                    }
+                    return { char, acc: '', octave: oct };
+                });
+            }
+            currentIndex = 0;
+            notesLayer.style.transition = 'none';
+            renderGrandStaffWord(currentWordArr);
+            void notesLayer.offsetWidth;
+            notesLayer.style.transition = 'transform 0.3s ease-in-out';
+            if (['words', 'random', 'practice', 'training', 'scale', 'a-g'].includes(mode)) {
+                wordStartTime = Date.now();
+            }
+        }
+
+        function appendSingleNoteToDOM(noteObj, index, forceY = null) {
+            const spacing = 45;
+            const startX = 120;
+            const {char, acc, octave, absIndex} = noteObj;
+            const y = forceY !== null ? forceY : getNoteY(char, octave);
+            currentWordYs[index] = y;
+            const renderIndex = absIndex !== undefined ? absIndex : index;
+            const x = startX + (renderIndex * spacing);
+
+            const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            group.id = `note-${index}`;
+            group.setAttribute("class", "text-[#1e293b] transition-colors duration-200");
+
+            const yArr = Array.isArray(y) ? y : [y];
+            const charArr = char.split('+');
+
+            yArr.forEach((cy, cIdx) => {
+                const ledgers = [];
+                if (cy <= 40) {
+                    for (let l = 40; l >= cy; l -= 10) ledgers.push(l);
+                }
+                if (cy === 100) ledgers.push(100);
+                if (cy >= 160) {
+                    for (let l = 160; l <= cy; l += 10) ledgers.push(l);
+                }
+
+                ledgers.forEach(ly => {
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", x - 15);
+                    line.setAttribute("x2", x + 15);
+                    line.setAttribute("y1", ly);
+                    line.setAttribute("y2", ly);
+                    line.setAttribute("class", "ledger-line");
+                    notesLayer.appendChild(line);
+                });
+
+                if (cIdx === 0) {
+                    if (acc === '#') {
+                        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        text.setAttribute("x", x - 22);
+                        text.setAttribute("y", cy + 7);
+                        text.setAttribute("font-size", "24");
+                        text.setAttribute("class", "music-font");
+                        text.setAttribute("fill", "currentColor");
+                        text.textContent = "♯";
+                        group.appendChild(text);
+                    } else if (acc === 'b') {
+                        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                        text.setAttribute("x", x - 22);
+                        text.setAttribute("y", cy + 7);
+                        text.setAttribute("font-size", "24");
+                        text.setAttribute("class", "music-font");
+                        text.setAttribute("fill", "currentColor");
+                        text.textContent = "♭";
+                        group.appendChild(text);
+                    }
+                }
+
+                const ellipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+                ellipse.setAttribute("cx", x);
+                ellipse.setAttribute("cy", cy);
+                ellipse.setAttribute("rx", "8.5");
+                ellipse.setAttribute("ry", "6.5");
+                ellipse.setAttribute("transform", `rotate(-20, ${x}, ${cy})`);
+                ellipse.setAttribute("fill", "currentColor");
+                group.appendChild(ellipse);
+                
+                const letterText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                letterText.setAttribute("x", x);
+                letterText.setAttribute("y", cy + 3.5);
+                letterText.setAttribute("text-anchor", "middle");
+                letterText.setAttribute("font-size", "8");
+                letterText.setAttribute("font-weight", "bold");
+                letterText.setAttribute("font-family", "sans-serif");
+                letterText.setAttribute("fill", "white");
+                if (alwaysShowToggle.checked) {
+                    letterText.setAttribute("class", "note-letter transition-opacity duration-200");
+                } else {
+                    letterText.setAttribute("class", "note-letter opacity-0 transition-opacity duration-200");
+                }
+                letterText.textContent = charArr[cIdx].toUpperCase();
+                group.appendChild(letterText);
+            });
+
+            const stem = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            const topY = Math.min(...yArr);
+            const bottomY = Math.max(...yArr);
+            if (topY >= 100) { 
+                stem.setAttribute("x1", x + 7.5);
+                stem.setAttribute("y1", bottomY - 2);
+                stem.setAttribute("x2", x + 7.5);
+                stem.setAttribute("y2", topY - 35);
+            } else { 
+                stem.setAttribute("x1", x - 7.5);
+                stem.setAttribute("y1", topY + 2);
+                stem.setAttribute("x2", x - 7.5);
+                stem.setAttribute("y2", bottomY + 35);
+            }
+            stem.setAttribute("class", "staff-line");
+
+            notesLayer.appendChild(stem);
+            notesLayer.appendChild(group);
+        }
+
+        function renderGrandStaffWord(wordArr, forceYs = null) {
+            notesLayer.innerHTML = '';
+            currentWordYs = [];
+            wordArr.forEach((noteObj, index) => {
+                const y = forceYs ? forceYs[index] : null;
+                appendSingleNoteToDOM(noteObj, index, y);
+            });
+            
+            updateScroll();
+        }
+
+        function drawFlashedNote(noteObj, index) {
+            const spacing = 45;
+            const startX = 120;
+            const renderIndex = noteObj.absIndex !== undefined ? noteObj.absIndex : index;
+            const x = startX + (renderIndex * spacing);
+            
+            const {char, acc, octave} = noteObj;
+            
+            const octavesToDraw = strictOctaveToggle.checked ? [octave] : [-3, -2, -1, 0, 1, 2, 3];
+            
+            octavesToDraw.forEach(oct => {
+                const y = getNoteY(char, oct);
+                
+                const flashGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                flashGroup.setAttribute("class", "text-red-500 transition-opacity duration-300");
+                
+                const ledgers = [];
+                if (y <= 40) {
+                    for (let l = 40; l >= y; l -= 10) ledgers.push(l);
+                }
+                if (y === 100) ledgers.push(100);
+                if (y >= 160) {
+                    for (let l = 160; l <= y; l += 10) ledgers.push(l);
+                }
+                ledgers.forEach(ly => {
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", x - 15);
+                    line.setAttribute("x2", x + 15);
+                    line.setAttribute("y1", ly);
+                    line.setAttribute("y2", ly);
+                    line.setAttribute("stroke", "#ef4444");
+                    line.setAttribute("stroke-width", "2");
+                    flashGroup.appendChild(line);
+                });
+                
+                if (acc === '#') {
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x - 22);
+                    text.setAttribute("y", y + 7);
+                    text.setAttribute("font-size", "24");
+                    text.setAttribute("class", "music-font");
+                    text.setAttribute("fill", "currentColor");
+                    text.textContent = "♯";
+                    flashGroup.appendChild(text);
+                } else if (acc === 'b') {
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x - 22);
+                    text.setAttribute("y", y + 7);
+                    text.setAttribute("font-size", "24");
+                    text.setAttribute("class", "music-font");
+                    text.setAttribute("fill", "currentColor");
+                    text.textContent = "♭";
+                    flashGroup.appendChild(text);
+                }
+                
+                const ellipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+                ellipse.setAttribute("cx", x);
+                ellipse.setAttribute("cy", y);
+                ellipse.setAttribute("rx", "8.5");
+                ellipse.setAttribute("ry", "6.5");
+                ellipse.setAttribute("transform", `rotate(-20, ${x}, ${y})`);
+                ellipse.setAttribute("fill", "currentColor");
+                flashGroup.appendChild(ellipse);
+                
+                const stem = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                if (y >= 100) { 
+                    stem.setAttribute("x1", x + 7.5);
+                    stem.setAttribute("y1", y - 2);
+                    stem.setAttribute("x2", x + 7.5);
+                    stem.setAttribute("y2", y - 35);
+                } else { 
+                    stem.setAttribute("x1", x - 7.5);
+                    stem.setAttribute("y1", y + 2);
+                    stem.setAttribute("x2", x - 7.5);
+                    stem.setAttribute("y2", y + 35);
+                }
+                stem.setAttribute("stroke", "#ef4444");
+                stem.setAttribute("stroke-width", "1.5");
+                flashGroup.appendChild(stem);
+                
+                notesLayer.appendChild(flashGroup);
+                
+                setTimeout(() => {
+                    flashGroup.classList.add('opacity-0');
+                    setTimeout(() => {
+                        flashGroup.remove();
+                    }, 300);
+                }, 300);
+            });
+        }
+
+        function submitNote(submittedObj) {
+            const expected = currentWordArr[currentIndex];
+            const noteEl = document.getElementById(`note-${currentIndex}`);
+
+            const strictOctave = strictOctaveToggle.checked;
+            
+            const isCorrect = submittedObj.char === expected.char && 
+                              submittedObj.acc === expected.acc && 
+                              (!strictOctave || submittedObj.octave === expected.octave);
+
+            recordStat(expected.char, expected.octave, expected.acc, isCorrect);
+            if (isCorrect) {
+                if (soundToggle.checked) {
+                    playNote(getNoteMidi(expected.char, expected.octave, expected.acc));
+                }
+                if(noteEl) {
+                    noteEl.setAttribute('class', 'text-green-500 transition-colors duration-200');
+                    if (overlayToggle.checked) {
+                        const textEl = noteEl.querySelector('.note-letter');
+                        if (textEl) {
+                            textEl.classList.remove('opacity-0');
+                        }
+                    }
+                }
+                score++;
+                scoreVal.textContent = score;
+                currentIndex++;
+                
+                const mode = modeSelect.value;
+                if (['random', 'words', 'practice', 'training', 'scale', 'a-g'].includes(mode) && !isTimeTrial && !isSpeedRun) {
+                    if (rollingNPMTimestamps.length === 0) {
+                        randomSessionStartTime = Date.now();
+                        clearInterval(randomStopwatchInterval);
+                        randomStopwatchInterval = setInterval(() => {
+                            if (isPaused) return;
+                            const diff = (Date.now() - randomSessionStartTime) / 1000;
+                            if (randomStopwatchVal) randomStopwatchVal.textContent = diff.toFixed(1) + " с";
+                        }, 100);
+                    }
+                    rollingNPMTimestamps.push(Date.now());
+                    if (rollingNPMTimestamps.length > 30) {
+                        rollingNPMTimestamps.shift();
+                    }
+                    if (rollingNPMTimestamps.length >= 2) {
+                        const diffSecs = (rollingNPMTimestamps[rollingNPMTimestamps.length - 1] - rollingNPMTimestamps[0]) / 1000;
+                        const numNotes = rollingNPMTimestamps.length - 1;
+                        const npm = diffSecs > 0 ? Math.round(numNotes / diffSecs * 60) : 0;
+                        const spn = numNotes > 0 ? (diffSecs / numNotes).toFixed(2) : "0.00";
+                        npmVal.textContent = npm;
+                        if (spnVal) spnVal.textContent = spn;
+                    }
+                }
+
+                updateScroll();
+                
+                if (currentIndex === currentWordArr.length) {
+                    if (['words', 'random', 'practice', 'training', 'scale', 'a-g'].includes(mode) && !isTimeTrial && !isSpeedRun) {
+                        const diffSecs = ((Date.now() - wordStartTime) / 1000).toFixed(2);
+                        let wordStr = "";
+                        if (mode === 'practice') {
+                            wordStr = "";
+                        } else if (mode === 'scale') {
+                            wordStr = window.currentScaleName || "Гамма";
+                        } else if (mode === 'a-g') {
+                            wordStr = "Прогон A-G";
+                        } else {
+                            wordStr = currentWordArr.map(n => n.char).join('');
+                            if (wordStr.length > 12) {
+                                wordStr = wordStr.substring(0, 10) + '..';
+                            }
+                        }
+                        recentWordsTimes.push({word: wordStr, time: diffSecs});
+                        if (recentWordsTimes.length > 5) {
+                            recentWordsTimes.shift();
+                        }
+                        wordsTimerList.innerHTML = '';
+                        recentWordsTimes.forEach(rt => {
+                            const row = document.createElement('div');
+                            row.className = 'flex justify-between items-center';
+                            row.innerHTML = `<span class="uppercase tracking-widest font-bold text-[10px]">${rt.word}</span><span class="text-indigo-500 font-black">${rt.time} с</span>`;
+                            wordsTimerList.appendChild(row);
+                        });
+                        wordsTimerList.scrollTop = wordsTimerList.scrollHeight;
+                    }
+                    if (isSpeedRun) {
+                        endSpeedRun();
+                    } else {
+                        // Reset stats (NPM, time) for the next run
+                        setTimeout(() => generateNewWord(false, false), 200);
+                    }
+                }
+            } else {
+                mistakes++;
+                mistakeVal.textContent = mistakes;
+                if (flashToggle.checked) {
+                    drawFlashedNote(submittedObj, currentIndex);
+                }
+                if (noteEl) {
+                    noteEl.setAttribute('class', 'text-[#1e293b] transition-colors duration-200');
+                }
+            }
+        }
+
+        function handleInput(char) {
+            if (!overlay.classList.contains('hidden')) return;
+            const mode = modeSelect.value;
+            const isFree = mode === 'freeplay' || mode === 'recording';
+
+            if (char === keyMap.up) {
+                if (currentOctave < 3) {
+                    currentOctave++;
+                    updateOctaveUI();
+                    if (mode === 'recording') {
+                        recordedString += 'k';
+                        recordingDisplay.textContent = recordedString;
+                    }
+                }
+                return;
+            }
+            if (char === keyMap.down) {
+                if (currentOctave > -3) {
+                    currentOctave--;
+                    updateOctaveUI();
+                    if (mode === 'recording') {
+                        recordedString += 'j';
+                        recordingDisplay.textContent = recordedString;
+                    }
+                }
+                return;
+            }
+
+            if (isFree) {
+                if (char === keyMap.flat) {
+                    accidentalToggle = accidentalToggle === 'b' ? null : 'b';
+                    updateToggleUI();
+                    return;
+                }
+                if (char === keyMap.sharp) {
+                    accidentalToggle = accidentalToggle === '#' ? null : '#';
+                    updateToggleUI();
+                    return;
+                }
+                if (/^[a-g]+(\+[a-g]+)*$/.test(char)) {
+                    let noteObj = { char, acc: accidentalToggle || '', octave: currentOctave, absIndex: totalNotesPlayed++ };
+                    if (!persistentAccidentalToggle.checked) accidentalToggle = null;
+                    updateToggleUI();
+                    
+                    if (mode === 'recording') {
+                        let recChar = "";
+                        if (noteObj.acc === '#') recChar += ';';
+                        if (noteObj.acc === 'b') recChar += 'l';
+                        recChar += char;
+                        recordedString += recChar;
+                        recordingDisplay.textContent = recordedString;
+                    }
+
+                    currentWordArr.push(noteObj);
+                    const y = getNoteY(noteObj.char, noteObj.octave);
+                    freePlayYs.push(y);
+
+                    if (currentWordArr.length > 20) {
+                        currentWordArr.shift();
+                        freePlayYs.shift();
+                    }
+                    
+                    renderGrandStaffWord(currentWordArr, freePlayYs);
+                    
+                    currentWordArr.forEach((_, i) => {
+                        let el = document.getElementById(`note-${i}`);
+                        if(el) {
+                            el.setAttribute('class', 'text-green-500 transition-colors duration-200');
+                            if (overlayToggle.checked) {
+                                const textEl = el.querySelector('.note-letter');
+                                if (textEl) textEl.classList.remove('opacity-0');
+                            }
+                        }
+                    });
+
+                    if (soundToggle.checked) {
+                        playNote(getNoteMidi(noteObj.char, noteObj.octave, noteObj.acc));
+                    }
+                }
+                return;
+            }
+
+            if (currentIndex >= currentWordArr.length) return;
+
+            if (char === keyMap.flat) {
+                if (pendingBaseNote) {
+                    submitNote({char: pendingBaseNote.char, acc: 'b', octave: currentOctave});
+                    pendingBaseNote = null;
+                } else {
+                    accidentalToggle = accidentalToggle === 'b' ? null : 'b';
+                    updateToggleUI();
+                }
+                return;
+            }
+            if (char === keyMap.sharp) {
+                if (pendingBaseNote) {
+                    submitNote({char: pendingBaseNote.char, acc: '#', octave: currentOctave});
+                    pendingBaseNote = null;
+                } else {
+                    accidentalToggle = accidentalToggle === '#' ? null : '#';
+                    updateToggleUI();
+                }
+                return;
+            }
+
+            if (/^[a-g]+(\+[a-g]+)*$/.test(char)) {
+                if (pendingBaseNote) {
+                    submitNote({char: pendingBaseNote.char, acc: '', octave: currentOctave});
+                    pendingBaseNote = null;
+                }
+
+                if (accidentalToggle) {
+                    submitNote({char, acc: accidentalToggle, octave: currentOctave});
+                    if (!persistentAccidentalToggle.checked) accidentalToggle = null;
+                    updateToggleUI();
+                } else {
+                    const expected = currentWordArr[currentIndex];
+                    if (!expected) return;
+                    
+                    const charMatches = expected.char === char;
+                    const needsAcc = expected.acc === '#' || expected.acc === 'b';
+                    
+                    if (charMatches && needsAcc) {
+                        pendingBaseNote = {char, octave: currentOctave};
+                        const noteEl = document.getElementById(`note-${currentIndex}`);
+                        if (noteEl) {
+                            noteEl.setAttribute('class', 'text-amber-500 transition-colors duration-200');
+                        }
+                    } else {
+                        submitNote({char, acc: '', octave: currentOctave});
+                    }
+                }
+            }
+        }
+
+        document.getElementById('skipBtn').addEventListener('click', generateNewWord);
+        
+        const hiddenInput = document.getElementById('hiddenMobileInput');
+        hiddenInput.addEventListener('input', (e) => {
+            const val = hiddenInput.value;
+            if (val.length > 0) {
+                const char = val[val.length - 1].toLowerCase();
+                if (char.match(/[a-g]/)) {
+                    // Slight delay to allow UI to register the keydown if native keyboard fired it
+                    setTimeout(() => handleInput(char), 10);
+                }
+                hiddenInput.value = '';
+            }
+        });
+        
+        document.getElementById('btnToggleVirtualKeyboard').addEventListener('click', () => {
+            const vk = document.getElementById('virtualKeyboardContainer');
+            vk.classList.toggle('hidden');
+        });
+        
+        document.getElementById('btnNativeKeyboard').addEventListener('click', () => {
+            hiddenInput.focus();
+        });
+        
+        document.getElementById('btnClearStats').addEventListener('click', () => {
+            if (confirm("Вы уверены, что хотите полностью удалить статистику тренировок? Восстановить её будет невозможно!")) {
+                noteStats = {};
+                if (typeof savePreferences === 'function') savePreferences();
+                if (isStatsVisible) updateStatsView();
+                showToast("Статистика тренировок удалена!");
+            }
+        });
+
+        document.getElementById('btnResetKeys').addEventListener('click', () => {
+            keyMap = { flat: 'j', sharp: 'k', down: ' ', up: 'n' };
+            renderAccKeys();
+            if (typeof savePreferences === 'function') savePreferences();
+        });
+        
+        document.getElementById('btnLJKKeys').addEventListener('click', () => {
+            keyMap = { flat: 'l', sharp: ';', down: 'j', up: 'k' };
+            renderAccKeys();
+            if (typeof savePreferences === 'function') savePreferences();
+        });
+        modeSelect.addEventListener('change', generateNewWord);
+        accidentalToggleCheck.addEventListener('change', generateNewWord);
+        const scaleRootSelect = document.getElementById('scaleRootSelect');
+        const scaleTypeSelect = document.getElementById('scaleTypeSelect');
+        const scaleOptionsContainer = document.getElementById('scaleOptionsContainer');
+        scaleRootSelect.addEventListener('change', generateNewWord);
+        scaleTypeSelect.addEventListener('change', generateNewWord);
+        strictOctaveToggle.addEventListener('change', () => {
+            if (!strictOctaveToggle.disabled) {
+                strictOctaveToggle.dataset.userChecked = strictOctaveToggle.checked;
+            }
+            const highlight = document.getElementById('octaveHighlight');
+            if (strictOctaveToggle.checked) {
+                highlight.classList.remove('hidden');
+            } else {
+                highlight.classList.add('hidden');
+            }
+        });
+
+        // Time Trial Logic
+        document.getElementById('btnTrial').addEventListener('click', () => {
+            if(isTimeTrial || isSpeedRun) return;
+            if (modeSelect.value !== 'words' && modeSelect.value !== 'random') {
+                modeSelect.value = 'random';
+            }
+            isTimeTrial = true;
+            modeSelect.disabled = true;
+            score = 0;
+            mistakes = 0;
+            scoreVal.textContent = score;
+            mistakeVal.textContent = mistakes;
+            timerDisplay.classList.remove('hidden');
+            timerDisplay.textContent = "60 с";
+            
+            overlay.classList.remove('hidden');
+            let count = 3;
+            overlayText.textContent = count;
+            
+            const countInt = setInterval(() => {
+                count--;
+                if(count > 0) {
+                    overlayText.textContent = count;
+                } else if(count === 0) {
+                    overlayText.textContent = "ПОЕХАЛИ!";
+                } else {
+                    clearInterval(countInt);
+                    overlay.classList.add('hidden');
+                    generateNewWord();
+                    startTimer();
+                }
+            }, 1000);
+        });
+
+        function startSpeedRunBase(isLoadedSong = false) {
+            if(isTimeTrial || isSpeedRun) return;
+            
+            if (isLoadedSong) {
+                modeSelect.value = 'practice';
+            } else if (modeSelect.value !== 'random' && modeSelect.value !== 'words' && modeSelect.value !== 'training' && modeSelect.value !== 'scale' && modeSelect.value !== 'a-g') {
+                modeSelect.value = 'random';
+            }
+            
+            isSpeedRun = true;
+            modeSelect.disabled = true;
+            score = 0;
+            mistakes = 0;
+            scoreVal.textContent = score;
+            mistakeVal.textContent = mistakes;
+            timerDisplay.classList.remove('hidden');
+            timerDisplay.textContent = "0.0 с";
+            
+            overlay.classList.remove('hidden');
+            let count = 3;
+            overlayText.textContent = count;
+            
+            const countInt = setInterval(() => {
+                count--;
+                if(count > 0) {
+                    overlayText.textContent = count;
+                } else if(count === 0) {
+                    overlayText.textContent = "ПОЕХАЛИ!";
+                } else {
+                    clearInterval(countInt);
+                    overlay.classList.add('hidden');
+                    generateNewWord(!isLoadedSong); // Pass true only for 100 notes random
+                    startSpeedRunTimer();
+                }
+            }, 1000);
+        }
+
+        document.getElementById('btnSpeedRun').addEventListener('click', () => startSpeedRunBase(false));
+        
+        document.getElementById('btnLoadedSong').addEventListener('click', () => startSpeedRunBase(true));
+
+        function startTimer() {
+            timeRemaining = 60;
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                timeRemaining--;
+                timerDisplay.textContent = timeRemaining + " с";
+                if(timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    endTimeTrial();
+                }
+            }, 1000);
+        }
+
+        function startSpeedRunTimer() {
+            speedRunStartTime = Date.now();
+            timerInterval = setInterval(() => {
+                if (isPaused) return;
+                const now = Date.now();
+                const diff = (now - speedRunStartTime) / 1000;
+                timerDisplay.textContent = diff.toFixed(1) + " с";
+            }, 100);
+        }
+
+        function endTimeTrial() {
+            isTimeTrial = false;
+            timerDisplay.classList.add('hidden');
+            showSharedCard(score, mistakes, modeSelect.value, "Время вышло!", false, "", encodeRange(rangeTopY, rangeBottomY));
+        }
+
+        function endSpeedRun() {
+            isSpeedRun = false;
+            clearInterval(timerInterval);
+            const now = Date.now();
+            const finalTime = ((now - speedRunStartTime) / 1000).toFixed(2);
+            timerDisplay.classList.add('hidden');
+            
+            let finalModeStr = 'speedrun';
+            let finalTitle = `Спидран: ${finalTime} с`;
+            if (modeSelect.value === 'practice') {
+                finalModeStr = 'speedrun-practice';
+            }
+            
+            showSharedCard(score, mistakes, finalModeStr, finalTitle, false, finalTime, encodeRange(rangeTopY, rangeBottomY));
+        }
+
+        function showSharedCard(s, m, mode, title="Результат по ссылке", isFaked=false, timeStr="", rangeStr="") {
+            document.getElementById('statsTitle').textContent = title;
+            document.getElementById('modalScore').textContent = s;
+            
+            const badge = document.getElementById('verifiedBadge');
+            if (!isFaked && (new URLSearchParams(window.location.search).has('sig') || title.includes('Результат по ссылке') || title.includes('Спидран'))) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            document.getElementById('modalMistakes').textContent = m;
+            
+            let accuracy = (parseInt(s) + parseInt(m)) > 0 ? ((parseInt(s) / (parseInt(s) + parseInt(m))) * 100).toFixed(1) : 0;
+            const modeNames = { words: 'Слова', random: 'Случайно', scale: 'Гаммы', 'a-g': 'Прогон A-G', freeplay: 'Свободная игра', recording: 'Запись', practice: 'Практика', training: 'Тренировка (SRS)', speedrun: 'Спидран', 'speedrun-practice': 'Спидран (практика)' };
+            let modeDisplay = modeNames[mode] || mode;
+            
+            let timeInSecs = parseFloat(timeStr) || 60;
+            let npm = timeInSecs > 0 ? Math.round(parseInt(s) * 60 / timeInSecs) : 0;
+            document.getElementById('modalNPM').textContent = npm;
+            
+            if (timeStr) {
+                modeDisplay += ` (${accuracy}% точности)`;
+            }
+            document.getElementById('modalMode').textContent = modeDisplay;
+            
+            statsModal.dataset.mode = mode;
+            statsModal.dataset.time = timeStr;
+            statsModal.dataset.range = rangeStr;
+            
+            const rangeContainer = document.getElementById('modalRangeContainer');
+            if (rangeStr && rangeStr.length === 2) {
+                const r = decodeRange(rangeStr);
+                if (r) {
+                    const rRect = document.getElementById('modalRangeRect');
+                    rRect.setAttribute('y', r.top);
+                    rRect.setAttribute('height', Math.max(0, r.bottom - r.top));
+                    rangeContainer.classList.remove('hidden');
+                } else {
+                    rangeContainer.classList.add('hidden');
+                }
+            } else {
+                rangeContainer.classList.add('hidden');
+            }
+            
+            if (isFaked) {
+                document.getElementById('fakedStamp').classList.remove('hidden');
+                document.getElementById('btnShare').classList.add('hidden'); 
+            } else {
+                document.getElementById('fakedStamp').classList.add('hidden');
+                document.getElementById('btnShare').classList.remove('hidden');
+            }
+            statsModal.classList.remove('hidden');
+        }
+
+        statsModal.addEventListener('click', (e) => {
+            if (e.target === statsModal) {
+                document.getElementById('btnCloseModal').click();
+            }
+        });
+
+        document.getElementById('btnCloseModal').addEventListener('click', () => {
+            statsModal.classList.add('hidden');
+            modeSelect.disabled = false;
+            // Reset for freeplay
+            score = 0; mistakes = 0;
+            scoreVal.textContent = "0"; mistakeVal.textContent = "0";
+            // Clean url
+            const url = new URL(window.location.href);
+            url.search = '';
+            window.history.replaceState({}, document.title, url.toString());
+            generateNewWord();
+        });
+
+        document.getElementById('btnShare').addEventListener('click', async () => {
+            const s = document.getElementById('modalScore').textContent;
+            const m = document.getElementById('modalMistakes').textContent;
+            let mode = statsModal.dataset.mode || modeSelect.value;
+            const t = statsModal.dataset.time || "";
+            const r = statsModal.dataset.range || "";
+            const sig = await generateSig(s, m, mode, t, r);
+            
+            const url = new URL(window.location.href);
+            url.searchParams.set('s', s);
+            url.searchParams.set('w', m);
+            url.searchParams.set('m', mode);
+            if (t) url.searchParams.set('t', t);
+            if (r) url.searchParams.set('r', r);
+            url.searchParams.set('sig', sig);
+            
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                showToast("Ссылка скопирована в буфер обмена!");
+            });
+        });
+
+        document.getElementById('btnClearRecording').addEventListener('click', () => {
+            recordedString = "";
+            recordingDisplay.textContent = "";
+            if (typeof rebuildRecording === 'function') rebuildRecording();
+        });
+
+        document.getElementById('btnShareRecording').addEventListener('click', () => {
+            if (!recordedString) {
+                showToast("Сначала сыграйте несколько нот!");
+                return;
+            }
+            const url = new URL(window.location.href);
+            url.searchParams.set('practice', recordedString);
+            window.history.replaceState({}, document.title, url.toString());
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                showToast("Ссылка на практику скопирована!");
+            });
+            const str = recordedString.toLowerCase().replace(/[^a-gjl;k\+]/g, '');
+            const tokens = str.match(/[a-g](?:\+[a-g])*|[l;jk]/g) || [];
+            let notes = [];
+            let mod = '';
+            let tempOctave = 0;
+            for (let token of tokens) {
+                if (token === 'k') { tempOctave = Math.min(3, tempOctave + 1); continue; }
+                if (token === 'j') { tempOctave = Math.max(-3, tempOctave - 1); continue; }
+                if (token === 'l' || token === ';') { mod = token; } else {
+                    let acc = ''; if (mod === 'l') acc = 'b'; else if (mod === ';') acc = '#';
+                    notes.push({char: token, acc, octave: tempOctave}); mod = '';
+                }
+            }
+            if (notes.length > 0) {
+                practiceArr = notes;
+                document.getElementById('practiceOption').style.display = 'block';
+                modeSelect.value = 'practice';
+                generateNewWord();
+            }
+        });
+
+        // Initialize and check for shared URL
+        window.onload = async () => {
+            const lengths = new Set(words.map(w => w.length));
+            const sortedLengths = Array.from(lengths).sort((a, b) => a - b);
+            sortedLengths.forEach(len => {
+                const opt = document.createElement('option');
+                opt.value = len;
+                opt.textContent = len + '+';
+                wordLengthSelect.appendChild(opt);
+            });
+            wordLengthSelect.addEventListener('change', () => {
+                savePreferences();
+                generateNewWord();
+            });
+
+            const saved = localStorage.getItem('speedSheetsPrefs');
+            if (saved) {
+                try {
+                    const prefs = JSON.parse(saved);
+                    overlayToggle.checked = prefs.overlay !== false;
+                    flashToggle.checked = prefs.flash !== false;
+                    soundToggle.checked = prefs.sound === true;
+                    accidentalToggleCheck.checked = prefs.accidental !== false;
+                    persistentAccidentalToggle.checked = prefs.persistent === true;
+                    if (prefs.alwaysShow !== undefined) alwaysShowToggle.checked = prefs.alwaysShow === true;
+                    if (prefs.keyMap) {
+                        keyMap = prefs.keyMap;
+                        renderAccKeys();
+                    }
+                    if (prefs.mode) {
+                        modeSelect.value = prefs.mode;
+                    }
+                    if (prefs.wordLength) {
+                        wordLengthSelect.value = prefs.wordLength;
+                    }
+                    if (prefs.strict !== undefined) {
+                        strictOctaveToggle.dataset.userChecked = prefs.strict;
+                        strictOctaveToggle.checked = prefs.strict;
+                    }
+                    if (prefs.noteStats) noteStats = prefs.noteStats;
+                    if (prefs.rangeTopY !== undefined) rangeTopY = prefs.rangeTopY;
+                    if (prefs.rangeBottomY !== undefined) rangeBottomY = prefs.rangeBottomY;
+                    if (prefs.isRangeVisible !== undefined) {
+                        isRangeVisible = prefs.isRangeVisible;
+                        rangeSelectorGroup.classList.toggle('hidden', !isRangeVisible);
+                        btnToggleRange.classList.toggle('text-indigo-600', isRangeVisible);
+                    }
+                } catch(e) {}
+            }
+            updateRangeUI();
+            updateStatsView();
+
+            updateOctaveUI();
+            strictOctaveToggle.dispatchEvent(new Event('change'));
+            
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('practice')) {
+                const str = params.get('practice').toLowerCase().replace(/[^a-gjl;k\+]/g, '');
+                const tokens = str.match(/[a-g](?:\+[a-g])*|[l;jk]/g) || [];
+                let notes = [];
+                let mod = '';
+                let tempOctave = 0;
+                for (let token of tokens) {
+                    if (token === 'k') { tempOctave = Math.min(3, tempOctave + 1); continue; }
+                    if (token === 'j') { tempOctave = Math.max(-3, tempOctave - 1); continue; }
+                    if (token === 'l' || token === ';') {
+                        mod = token;
+                    } else {
+                        let acc = '';
+                        if (mod === 'l') { acc = 'b'; }
+                        else if (mod === ';') { acc = '#'; }
+                        notes.push({char: token, acc, octave: tempOctave});
+                        mod = '';
+                    }
+                }
+                if (notes.length > 0) {
+                    practiceArr = notes;
+                    document.getElementById('practiceOption').style.display = 'block';
+                    modeSelect.value = 'practice';
+                }
+            }
+            
+            if (params.has('s') || params.has('w') || params.has('m')) {
+                const s = params.get('s') || "0";
+                const w = params.get('w') || "0";
+                const m = params.get('m') || "words";
+                const t = params.get('t') || "";
+                const r = params.get('r') || "";
+                const sig = params.get('sig') || "";
+                const expected = await generateSig(s, w, m, t, r);
+                let title = t ? `Спидран: ${t} с` : "Результат по ссылке";
+                if (sig === expected && sig !== "") {
+                    showSharedCard(s, w, m, title, false, t, r);
+                } else {
+                    showSharedCard(s, w, m, "Неверный результат", true, t, r);
+                }
+            }
+            generateNewWord();
+        };
+    </script>
+</body>
+</html>
