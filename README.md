@@ -26,7 +26,7 @@
 
 Нажмите на любую из этих ссылок, чтобы мгновенно загрузить песню в режим практики!
 
-####Поп и рок
+#### Поп и рок
 
 **Seven Nation Army — The White Stripes** (со скачками октав)
 https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=eegedcjbkeegecdcjba
@@ -40,7 +40,7 @@ https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=gkdjbb
 **Take On Me — A-ha** (припев, с диезами)
 https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=;fga;fga;fedde;fga
 
-####Фильмы и игры
+#### Фильмы и игры
 
 **Star Wars (Main Theme) — John Williams** (со скачками октав)
 https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=gggkcgfedkcjgfedkcjgfefd
@@ -60,7 +60,7 @@ https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=bkeg;f
 **He's a Pirate (Pirates of the Caribbean)**
 https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=gkcccdeeeefgggagffeddc
 
-####Классика и народная музыка
+#### Классика и народная музыка
 
 **Für Elise — Beethoven** (с диезами)
 https://dragonfuckingborn.github.io/SpeedSheets_RussianLanguage/?practice=ke;de;dejbkdcja
